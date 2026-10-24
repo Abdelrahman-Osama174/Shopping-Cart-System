@@ -1,3 +1,11 @@
 spring:
   application:
     name: Shopping Cart System
+
+  profiles:
+    active: local
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/shopping_cart}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
