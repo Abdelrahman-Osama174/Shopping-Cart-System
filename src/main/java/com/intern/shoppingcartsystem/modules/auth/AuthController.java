@@ -24,8 +24,14 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
-        AuthResponse authResponse = authService.register(registerRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(authResponse);
+        String response = authService.register(registerRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PostMapping("/verify-email")
+    public ResponseEntity<String> verifyEmail(@Valid @RequestBody VerifyEmailRequest request) {
+        authService.verifyEmail(request);
+
+        return ResponseEntity.ok("Email verified successfully");
+    }
 }

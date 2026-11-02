@@ -1,9 +1,14 @@
 package com.intern.shoppingcartsystem.modules.auth;
 
 import com.intern.shoppingcartsystem.common.exception.EmailAlreadyExistsException;
+import com.intern.shoppingcartsystem.common.exception.OtpExpiredException;
+import com.intern.shoppingcartsystem.common.exception.ResourceNotFoundException;
+import com.intern.shoppingcartsystem.infrastructure.email.EmailService;
+import com.intern.shoppingcartsystem.infrastructure.otp.OtpService;
 import com.intern.shoppingcartsystem.modules.user.*;
 import com.intern.shoppingcartsystem.security.JwtService;
 import com.intern.shoppingcartsystem.security.UserPrincipal;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +29,9 @@ public class AuthService {
 
     private final AuthMapper authMapper;
 
+    private final OtpService otpService;
+    private final EmailService emailService;
+
 
     public AuthResponse login(LoginRequest request) {
 
@@ -42,7 +50,7 @@ public class AuthService {
     }
 
 
-    public AuthResponse register(RegisterRequest request) {
+    public String register(RegisterRequest request) {
 
         if (userRepository.existsByEmail(request.email())) {
             throw new EmailAlreadyExistsException("Email already exists.");
@@ -57,9 +65,51 @@ public class AuthService {
 
         userRepository.save(user);
 
-        UserPrincipal userPrincipal = new UserPrincipal(user);
-        String token = jwtService.generateJwtToken(userPrincipal);
+        sendVerificationOtp(user.getEmail());
 
-        return authMapper.toResponse(token, user);
+        return "Registration successful. Please verify your email.";
     }
+
+
+    @Transactional
+    public void verifyEmail(VerifyEmailRequest request) {
+
+        User user = userRepository.findByEmail(request.email())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (user.isEmailVerified()) {
+            throw new EmailAlreadyExistsException("Email is already verified");
+        }
+
+        boolean isValid = otpService.verify(request.email(), request.otp());
+
+        if (!isValid) {
+            throw new OtpExpiredException("Invalid or expired OTP");
+        }
+
+        user.setEmailVerified(true);
+
+        userRepository.save(user);
+    }
+
+
+    private void sendVerificationOtp(String email) {
+
+        String otp = otpService.generateAndStore(email);
+
+        emailService.sendEmail(
+                email,
+                "Verify Your Email - Shopping Cart System",
+                """
+                        Hello,
+                        
+                        Your email verification code is: %s
+                        
+                        This code will expire in 5 minutes.
+                        
+                        If you did not create an account, please ignore this email.
+                        """.formatted(otp)
+        );
+    }
+
 }
