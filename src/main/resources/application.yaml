@@ -1,48 +1,48 @@
 server:
-  port: 8080
+    port: 8080
 
 spring:
-  application:
-    name: Shopping Cart System
+    application:
+        name: Shopping Cart System
 
-  profiles:
-    active: dev
+    profiles:
+        active: dev
 
-  datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/shopping_cart}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    datasource:
+        url: ${DB_URL:jdbc:postgresql://localhost:5432/shopping_cart}
+        username: ${DB_USERNAME}
+        password: ${DB_PASSWORD}
 
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    open-in-view: false
+    jpa:
+        hibernate:
+            ddl-auto: update
+        show-sql: true
+        open-in-view: false
 
-  flyway:
-      enabled: false
-      locations: classpath:db/migration
+    flyway:
+        enabled: false
+        locations: classpath:db/migration
 
-  mail:
-      host: smtp.gmail.com
-      port: 587
-      username: ${MAIL_USERNAME}
-      password: ${MAIL_PASSWORD}
-      properties:
-        mail:
-          smtp:
-            auth: true
-            starttls:
-              enable: true
-              requires: true
+    mail:
+        host: ${MAIL_HOST}
+        port: 587
+        username: ${MAIL_USERNAME}
+        password: ${MAIL_PASSWORD}
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+                        requires: true
 
-  spring:
+
     data:
-      redis:
-        host: ${REDIS_HOST}
-        port: ${REDIS_PORT}
+        redis:
+            host: ${REDIS_HOST}
+            port: ${REDIS_PORT}
 
 app:
-  jwt:
-    secret: ${JWT_SECRET}
-    token-expiration: ${JWT_TOKEN_EXPIRATION}
+    jwt:
+        secret: ${JWT_SECRET}
+        token-expiration: ${JWT_TOKEN_EXPIRATION}

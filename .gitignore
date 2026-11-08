@@ -34,3 +34,5 @@ build/
 
 # Local environment configuration
 /src/main/resources/application-dev.yml
+
+/Note

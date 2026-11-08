@@ -11,7 +11,7 @@ public interface AuthMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "role", ignore = true, defaultValue = "CUSTOMER")
-    @Mapping(target = "isActive", ignore = true, defaultValue = "true")
+    @Mapping(target = "active", ignore = true, defaultValue = "false")
     @Mapping(target = "emailVerified", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)

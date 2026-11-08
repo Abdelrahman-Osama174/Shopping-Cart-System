@@ -26,6 +26,18 @@ import java.util.Map;
 @Slf4j
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(EmailAlreadyVerifiedException.class)
+    public ResponseEntity<ErrorResponse> handleEmailAlreadyVerified(EmailAlreadyVerifiedException ex, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ErrorResponse.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(409)
+                        .errorCode("Conflict")
+                        .message(ex.getMessage())
+                        .path(request.getRequestURI())
+                        .build());
+    }
+
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleEmailAlreadyExists(EmailAlreadyExistsException ex, HttpServletRequest request) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
@@ -33,7 +45,7 @@ public class GlobalExceptionHandler {
                         ErrorResponse.builder()
                                 .timestamp(LocalDateTime.now())
                                 .status(409)
-                                .error("Conflict")
+                                .errorCode("Conflict")
                                 .message(ex.getMessage())
                                 .path(request.getRequestURI())
                                 .build()
@@ -48,7 +60,7 @@ public class GlobalExceptionHandler {
                         ErrorResponse.builder()
                                 .timestamp(LocalDateTime.now())
                                 .status(401)
-                                .error("Unauthorized")
+                                .errorCode("Unauthorized")
                                 .message(ex.getMessage())
                                 .path(request.getRequestURI())
                                 .build()
@@ -61,7 +73,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.UNAUTHORIZED.value())
-                .error("Unauthorized")
+                .errorCode("Unauthorized")
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
                 .build();
@@ -75,7 +87,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.UNAUTHORIZED.value())
-                .error("Invalid JWT Signature")
+                .errorCode("Invalid JWT Signature")
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
                 .build();
@@ -90,7 +102,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.UNAUTHORIZED.value())
-                .error("JWT Token Expired")
+                .errorCode("JWT Token Expired")
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
                 .build();
@@ -105,7 +117,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.UNAUTHORIZED.value())
-                .error("Malformed JWT Token")
+                .errorCode("Malformed JWT Token")
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
                 .build();
@@ -123,7 +135,7 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.FORBIDDEN.value())
-                .error("Forbidden")
+                .errorCode("Forbidden")
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
                 .details(null)
@@ -140,7 +152,7 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.UNAUTHORIZED.value())
-                .error("Unauthorized")
+                .errorCode("Unauthorized")
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
                 .details(null)
@@ -157,7 +169,7 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.UNAUTHORIZED.value())
-                .error("Unauthorized")
+                .errorCode("Unauthorized")
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
                 .details(null)
@@ -174,7 +186,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.NOT_FOUND.value())
-                .error("Not Found")
+                .errorCode("Not Found")
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
                 .build();
@@ -193,7 +205,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.BAD_REQUEST.value())
-                .error("Validation Failed")
+                .errorCode("Validation Failed")
                 .message("Validation failed for one or more fields")
                 .path(request.getRequestURI())
                 .details(details)
@@ -208,15 +220,15 @@ public class GlobalExceptionHandler {
         Map<String, String> details = new HashMap<>();
 
         ex.getConstraintViolations().forEach(violation -> {
-                    String propertyPath = violation.getPropertyPath().toString();
-                    String message = violation.getMessage();
-                    details.put(propertyPath, message);
-                });
+            String propertyPath = violation.getPropertyPath().toString();
+            String message = violation.getMessage();
+            details.put(propertyPath, message);
+        });
 
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.BAD_REQUEST.value())
-                .error("Validation Failed")
+                .errorCode("Validation Failed")
                 .message("Validation failed for one or more fields")
                 .path(request.getRequestURI())
                 .details(details)
@@ -232,11 +244,10 @@ public class GlobalExceptionHandler {
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.BAD_REQUEST.value())
-                .error("Bad Request")
+                .errorCode("Bad Request")
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
                 .build();
-
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
@@ -250,7 +261,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .error("Internal Server Error")
+                .errorCode("Internal Server Error")
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
                 .build();
