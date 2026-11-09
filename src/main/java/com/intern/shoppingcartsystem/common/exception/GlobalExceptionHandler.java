@@ -26,6 +26,18 @@ import java.util.Map;
 @Slf4j
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(InvalidRoleAssignmentException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidRoleAssignment(InvalidRoleAssignmentException ex, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(400)
+                        .errorCode("InvalidRoleAssignment")
+                        .message(ex.getMessage())
+                        .path(request.getRequestURI())
+                        .build());
+    }
+
     @ExceptionHandler(EmailAlreadyVerifiedException.class)
     public ResponseEntity<ErrorResponse> handleEmailAlreadyVerified(EmailAlreadyVerifiedException ex, HttpServletRequest request) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
