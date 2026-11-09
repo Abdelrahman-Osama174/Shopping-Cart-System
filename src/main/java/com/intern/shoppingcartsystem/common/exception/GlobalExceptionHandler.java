@@ -26,8 +26,8 @@ import java.util.Map;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(InvalidRoleAssignmentException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidRoleAssignment(InvalidRoleAssignmentException ex, HttpServletRequest request) {
+    @ExceptionHandler(AdminRoleAssignmentNotAllowedException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidRoleAssignment(AdminRoleAssignmentNotAllowedException ex, HttpServletRequest request) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.builder()
                         .timestamp(LocalDateTime.now())

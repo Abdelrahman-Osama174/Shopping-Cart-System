@@ -1,4 +1,4 @@
-package com.intern.shoppingcartsystem.common.Pagination;
+package com.intern.shoppingcartsystem.common.pagination;
 
 import org.springframework.data.domain.Page;
 

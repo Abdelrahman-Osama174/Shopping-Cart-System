@@ -1,9 +1,9 @@
 package com.intern.shoppingcartsystem.modules.user;
 
-import com.intern.shoppingcartsystem.common.Pagination.PageResponse;
+import com.intern.shoppingcartsystem.common.pagination.PageResponse;
 import com.intern.shoppingcartsystem.common.exception.AdminRoleModificationNotAllowedException;
 import com.intern.shoppingcartsystem.common.exception.AdminStatusModificationNotAllowedException;
-import com.intern.shoppingcartsystem.common.exception.InvalidRoleAssignmentException;
+import com.intern.shoppingcartsystem.common.exception.AdminRoleAssignmentNotAllowedException;
 import com.intern.shoppingcartsystem.common.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +50,7 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 
         if (request.role() == Role.ADMIN) {
-            throw new InvalidRoleAssignmentException("Cannot assign ADMIN role through this operation");
+            throw new AdminRoleAssignmentNotAllowedException("Cannot assign ADMIN role through this operation");
         }
 
         if (user.getRole() == Role.ADMIN && request.role() != Role.ADMIN) {

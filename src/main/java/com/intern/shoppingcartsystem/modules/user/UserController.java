@@ -1,6 +1,6 @@
 package com.intern.shoppingcartsystem.modules.user;
 
-import com.intern.shoppingcartsystem.common.Pagination.PageResponse;
+import com.intern.shoppingcartsystem.common.pagination.PageResponse;
 import com.intern.shoppingcartsystem.security.UserPrincipal;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
